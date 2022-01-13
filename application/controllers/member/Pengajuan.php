@@ -15,15 +15,21 @@ class Pengajuan extends MY_Controller
 
     public function index()
     {
-        $data            = konfigurasi('Pengajuan', 'Kelola Pengajuan');
+        $data = konfigurasi('Pengajuan', 'Kelola Pengajuan');
         $data['pengajuans'] = $this->Pengajuan_model->get_all();
-        $this->template->load('layouts/template', 'member/pengajuan/index', $data);
+        if($this->session->userdata('status') == '1'){
+            $this->template->load('layouts/template', 'member/pengajuan/add', $data);
+        }else{
+            $this->template->load('layouts/template', 'member/pengajuan/index', $data);
+        }
+        // $this->template->load('layouts/template', 'member/pengajuan/index', $data);
     }
 
     public function add()
     {
         $data = konfigurasi('Tambah Pengajuan', 'Tambah Pengajuan');
         $this->template->load('layouts/template', 'member/pengajuan/create', $data);
+
     }
 
     public function create()

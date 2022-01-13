@@ -24,6 +24,7 @@
 					<td><?= $pengajuan->jurusan ?></td>
 					<td><?= $pengajuan->prodi ?></td>
 					<td class="text-center" width="160px" style="padding-left: 20px;">
+						<?php echo anchor('member/pengajuan/add/' . $pengajuan->pengajuan_id, 'Create'); ?> |
 						<?php echo anchor('member/pengajuan/detail/' . $pengajuan->pengajuan_id, 'Detail'); ?> |
 						<?php echo anchor('member/pengajuan/edit/' . $pengajuan->pengajuan_id, 'Update'); ?> |
 						<?php echo anchor('member/pengajuan/delete/' . $pengajuan->pengajuan_id, 'Delete'); ?>
