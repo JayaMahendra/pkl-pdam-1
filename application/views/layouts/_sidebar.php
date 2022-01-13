@@ -33,7 +33,7 @@
       <li class="header">HEADER</li>
       <!-- Optionally, you can add icons to the links -->
       <li class="active"><a href="<?=base_url()?>"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-			<li><a href="<?=base_url('/admin/person')?>"><i class="fa fa-users"></i> <span>Pengajuan</span></a></li>
+			<li><a href="<?=base_url('/member/pengajuan')?>"><i class="fa fa-users"></i> <span>Pengajuan</span></a></li>
       <li><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
      <li class="treeview" style="height: auto;">
           <a href="#">

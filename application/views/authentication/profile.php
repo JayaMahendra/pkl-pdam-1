@@ -9,6 +9,14 @@
 				<!--PR FOTO -->
 				<img class="profile-user-img img-responsive img-circle" src="<?= base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" style="width:125px; height:125px">
 
+				<!-- <img class="profile-user-img img-responsive img-circle" src="<?php 
+					// if ($userdata->photo == NULL) {
+					// 	base_url('assets/uploads/images/foto_profil/images/1526456245974.png'); 
+					// } else {
+					// 	base_url('assets/uploads/images/foto_profil/'.$userdata->photo); 
+					// }
+				?>" style="width:125px; height:125px"> -->
+
 				<h3 class="profile-username text-center"><?= $userdata->nama; ?></h3>
 
 				<p class="text-muted text-center">
