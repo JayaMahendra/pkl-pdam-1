@@ -199,11 +199,13 @@ class Pengajuan extends MY_Controller
         redirect('member/pengajuan');
     }
 
-    public function detail($id, $idm)
+    public function detail($id)
     {
         $data           = konfigurasi('Detail Pengajuan', 'Detail Pengajuan');
         $data['pengajuan'] = $this->Pengajuan_model->get_by_id($id);
+        $data['pengajuan_mahasiswa'] = $this->Pengajuan_model->pengajuan_mahasiswa($id);
         $this->template->load('layouts/template', 'member/pengajuan/detail', $data);
+
         
     }
 

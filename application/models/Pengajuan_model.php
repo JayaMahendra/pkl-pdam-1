@@ -25,13 +25,18 @@ class Pengajuan_model extends CI_Model
         return $query->result();
     }
 
-    public function pengajuan_mahasiswa()
+    public function pengajuan_mahasiswa($id)
     {
-        $this->db->order_by('nik', 'ASC');
-        return $this->db->from('pengajuan')
-            ->join('pengajuan_mahasiswa', 'pengajuan_mahasiswa.pengajuan_m_id=pengajuan.pengajuan_id')
+        $this->db->order_by('nim', 'ASC');
+        $this->session->userdata('pengajuan_id');
+        return $this->db->from('pengajuan_mahasiswa')
+            ->where('pengajuan_id', $id)
             ->get()
             ->result();
+        // return $this->db->from('pengajuan')
+        //     ->join('pengajuan_mahasiswa', 'pengajuan_mahasiswa.pengajuan_m_id=pengajuan.pengajuan_id')
+        //     ->get()
+        //     ->result();
     }
     
 

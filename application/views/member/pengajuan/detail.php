@@ -3,7 +3,8 @@
 		<div>
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<div class="h4 text-center">Detail Pengajuan</div>
+					<div class="h1 text-center">Detail Pengajuan</div>
+					<br><br>
 					<div class="row pv-lg">
 						<div></div>
 						<div class="col-lg-10">
@@ -67,16 +68,17 @@
 									</div>
 								</div>
 						</div>
-
 					</div>
 					</form>
-					<h1>DETAIL MAHASISWA</h1>
+					<br>
+					<h1>Detail Mahasiswa</h1>
+					<br>
 					<!-- <form name="form2" action="<?= base_url('member/pengajuan/createm') ?>" method="post"> -->
 					<div class="table-responsive">
 						<table class="table table-striped">
 							<thead>
 								<tr>
-									<th scope="col">No</th>
+									<!-- <th scope="col">No</th> -->
 									<th scope="col">Nama</th>
 									<th scope="col">NIM</th>
 									<th scope="col">Alamat</th>
@@ -86,16 +88,20 @@
 								</tr>
 							</thead>
 							<tbody>
-								<?php
-								foreach ($result as $item) {
+							<?php
+								foreach ($pengajuan_mahasiswa as $item) {
 									echo "<tr>
-										<td>{$item->totalcount}</td>
-										<td>{$item->malecount}</td>
-										<td>{$item->femalecount}</td>
+										<td>{$item->nama}</td>
+										<td>{$item->nim}</td>
+										<td>{$item->alamat}</td>
+										<td>{$item->email}</td>
+										<td>{$item->handphone}</td>
+										<td><img src='assets/uploads/foto/{$item->foto}'></td>
 										</tr>";
 								}
+								
 								?>
-								<tr>
+								<!-- <tr>
 									<th scope="row">1</th>
 									<td><?= $pengajuan_mahasiswa->nama ?></td>
 									<td><input type="text" name="nim" style="border: 0;"></td>
@@ -103,7 +109,7 @@
 									<td><input type="text" name="email" style="border: 0;"></td>
 									<td><input type="text" name="handphone" style="border: 0;"></td>
 									<td><input type="file" name="foto" style="border: 0;"></td>
-								</tr>
+								</tr> -->
 								<!-- <tr>
 			<th scope="row">2</th>
 			<td><input type="text" name="nama" style="border: 0;"></td>
@@ -143,7 +149,7 @@
 							</tbody>
 						</table>
 					</div>
-					<button class="btn btn-primary" type="submit">Save</button>
+					<!-- <button class="btn btn-primary" type="submit">Save</button> -->
 					<!-- </form> -->
 				</div>
 			</div>
