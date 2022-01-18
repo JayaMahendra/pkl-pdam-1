@@ -1,3 +1,4 @@
+
 <div class="table-responsive" style="padding-top: 6px">
 	<table class="table table-striped table-hover table-condensed" id="mytable" style="width: 100%">
 		<thead>
@@ -9,7 +10,7 @@
 				<th>Instansi</th>
 				<th>Jurusan</th>
 				<th>Prodi</th>
-				<th class="text-center" width="160px" style="padding-left: 20px;">Tindakan</th>
+				<th class="text-center" width="160px" style="padding-left: 20px;">Aksi</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -23,8 +24,8 @@
 					<td><?= $pengajuan->asal ?></td>
 					<td><?= $pengajuan->jurusan ?></td>
 					<td><?= $pengajuan->prodi ?></td>
+					<!-- <td><?= $this->session->userdata('status_pengajuan') ?></td> -->
 					<td class="text-center" width="160px" style="padding-left: 20px;">
-						<?php echo anchor('member/pengajuan/add/' . $pengajuan->pengajuan_id, 'Create'); ?> |
 						<?php echo anchor('member/pengajuan/detail/' . $pengajuan->pengajuan_id, 'Detail'); ?> |
 						<?php echo anchor('member/pengajuan/edit/' . $pengajuan->pengajuan_id, 'Update'); ?> |
 						<?php echo anchor('member/pengajuan/delete/' . $pengajuan->pengajuan_id, 'Delete'); ?>
@@ -33,4 +34,5 @@
 			<?php } ?>
 		</tbody>
 	</table>
+	<a href="pengajuan/add/"  class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Create</a>
 </div>

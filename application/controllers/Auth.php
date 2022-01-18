@@ -1,4 +1,4 @@
-<?php 
+<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
@@ -32,6 +32,14 @@ class Auth extends MY_Controller
         $data = konfigurasi('Profile', 'Kelola Profile');
         $this->template->load('layouts/template', 'authentication/profile', $data);
     }
+    public function update_pengajuan()
+    {
+        $id = $this->session->userdata('pengguna_id');
+        $appointment = array('status_pengajuan' => 2);
+        $this->db->where('id', $id);
+        $this->db->update('status_pengajuan', $appointment);
+        $this->template->load('layouts/template', 'member/index');
+    }
 
     public function updateProfile()
     {
@@ -51,26 +59,26 @@ class Auth extends MY_Controller
             'photo' => $this->input->post('photo'),
         );
         // if ($this->form_validation->run() == true) {
-            if (!empty($_FILES['photo']['name'])) {
-                $upload = $this->_do_upload();
+        if (!empty($_FILES['photo']['name'])) {
+            $upload = $this->_do_upload();
 
-                //delete file
-                $user = $this->Auth_model->get_by_id($this->session->userdata('id'));
-                if (file_exists('assets/uploads/images/foto_profil/'.$user->photo) && $user->photo) {
-                    unlink('assets/uploads/images/foto_profil/'.$user->photo);
-                }
+            //delete file
+            $user = $this->Auth_model->get_by_id($this->session->userdata('id'));
+            if (file_exists('assets/uploads/images/foto_profil/' . $user->photo) && $user->photo) {
+                unlink('assets/uploads/images/foto_profil/' . $user->photo);
+            }
 
-                $data['photo'] = $upload;
-            }
-            $result = $this->Auth_model->update($data, $id);
-            if ($result > 0) {
-                $this->updateProfil();
-                $this->session->set_flashdata('msg', show_succ_msg('Data Profil Berhasil diubah'));
-                redirect('auth/profile');
-            } else {
-                $this->session->set_flashdata('msg', show_err_msg('Data Profile Gagal diubah'));
-                redirect('auth/profile');
-            }
+            $data['photo'] = $upload;
+        }
+        $result = $this->Auth_model->update($data, $id);
+        if ($result > 0) {
+            $this->updateProfil();
+            $this->session->set_flashdata('msg', show_succ_msg('Data Profil Berhasil diubah'));
+            redirect('auth/profile');
+        } else {
+            $this->session->set_flashdata('msg', show_err_msg('Data Profile Gagal diubah'));
+            redirect('auth/profile');
+        }
         // } else {
         //     $this->session->set_flashdata('msg', show_err_msg(validation_errors()));
         //     redirect('auth/profile');
@@ -137,8 +145,8 @@ class Auth extends MY_Controller
     public function check_register()
     {
         $data = konfigurasi('Register');
-            $this->Auth_model->reg();
-            $this->session->set_flashdata('alert', '<p class="box-msg">
+        $this->Auth_model->reg();
+        $this->session->set_flashdata('alert', '<p class="box-msg">
               <div class="info-box alert-success">
               <div class="info-box-icon">
               <i class="fa fa-check-circle"></i>
@@ -148,7 +156,7 @@ class Auth extends MY_Controller
               </div>
               </p>
             ');
-            redirect('auth/login', 'refresh', $data);
+        redirect('auth/login', 'refresh', $data);
     }
 
     public function check_account()
@@ -172,7 +180,9 @@ class Auth extends MY_Controller
         			</p>
             ');
         } elseif ($query === 2) {
-            $this->session->set_flashdata('alert','<p class="box-msg">
+            $this->session->set_flashdata(
+                'alert',
+                '<p class="box-msg">
               <div class="info-box alert-info">
               <div class="info-box-icon">
               <i class="fa fa-info-circle"></i>
@@ -193,23 +203,25 @@ class Auth extends MY_Controller
         			</div>
         			</p>
               ');
-        } 
-        else {
+        } else {
             //membuat session dengan nama userData yang artinya nanti data ini bisa di ambil sesuai dengan data yang login
             $userdata = array(
-              'is_login'    => true,
-              'pengguna_id'          => $query->pengguna_id,
-              'password'    => $query->password,
-              'role_id'     => $query->role_id,
-              'name'    => $query->nama,
-            //   'first_name'  => $query->first_name,
-            //   'last_name'   => $query->last_name,
-              'email'       => $query->email,
-              'handphone'       => $query->handphone,
-               'photo'       => $query->photo,
-               'last_login'  => $query->last_login,
-            //   'created_at'  => $query->created_at,
-            //   'updated_at'  => $query->updated_at,
+                'is_login'    => true,
+                'pengguna_id'          => $query->pengguna_id,
+                'password'    => $query->password,
+                'role_id'     => $query->role_id,
+                'name'    => $query->nama,
+                //   'first_name'  => $query->first_name,
+                //   'last_name'   => $query->last_name,
+                'email'       => $query->email,
+                'handphone'       => $query->handphone,
+                'photo'       => $query->photo,
+                'last_login'  => $query->last_login,
+                'status_pengajuan'  => $query->status_pengajuan,
+                'pengguna_id'  => $query->pengguna_id,
+
+                //   'created_at'  => $query->created_at,
+                //   'updated_at'  => $query->updated_at,
             );
             $this->session->set_userdata($userdata);
             return true;
@@ -253,12 +265,12 @@ class Auth extends MY_Controller
         date_default_timezone_set('ASIA/JAKARTA');
         $date = array('last_login' => date('Y-m-d H:i:s'));
         $id = $this->session->userdata('id');
-		$this->Auth_model->logout($date, $id);
-		$user_data = $this->session->userdata();
-		foreach ($user_data as $key => $value) {
-			if ($key!='__ci_last_regenerate' && $key != '__ci_vars')
-			$this->session->unset_userdata($key);
-		}
+        $this->Auth_model->logout($date, $id);
+        $user_data = $this->session->userdata();
+        foreach ($user_data as $key => $value) {
+            if ($key != '__ci_last_regenerate' && $key != '__ci_vars')
+                $this->session->unset_userdata($key);
+        }
         $this->session->set_flashdata('alert', '<p class="box-msg">
               <div class="info-box alert-success">
               <div class="info-box-icon">
@@ -271,5 +283,4 @@ class Auth extends MY_Controller
 			');
         redirect('auth/login');
     }
-
 }
