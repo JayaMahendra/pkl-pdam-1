@@ -69,7 +69,7 @@
 						<br>
 						<h1>Detail Mahasiswa</h1>
 						<br>
-						<div class="table-responsive-sm">
+						<div class="table-responsive">
 							<table class="table table-striped">
 								<thead>
 									<tr>
@@ -84,17 +84,19 @@
 								</thead>
 								<tbody>
 									<?php
-									// $i = 0;
+									$i = 0;
 									foreach ($pengajuan_mahasiswa as $item) {
-										echo "<tr>
+										echo "<tr>										
+										<input type='text' name='id$i' value='$item->pengajuan_m_id' style='border:0 ; display:	none' >
 										<td><input type='text' name='nama$i' value='$item->nama' style='border:0'></td>
 										<td><input type='text' name='nim$i' value='$item->nim' style='border:0'></td>
 										<td><input type='text' name='alamat$i' value='$item->alamat' style='border:0'></td>
 										<td><input type='text' name='email$i' value='$item->email' style='border:0'></td>
 										<td><input type='text' name='handphone$i' value='$item->handphone' style='border:0'></td>
-										<td><img src='assets/uploads/foto/{$item->foto}' width='42' height='42'></td>
+										<td><img src='".base_url('assets/uploads/foto/').$item->foto."' width='42' height='42'></td>
+										<td><input type='file' name='foto$i' style='border:0'></td>
 										</tr>";
-										// $i++;
+										$i++;
 									} ?>
 								</tbody>
 							</table>

@@ -39,7 +39,7 @@ class Pengajuan_model extends CI_Model
         //     ->get()
         //     ->result();
     }
-    
+
 
 
     public function insert($data)
@@ -51,7 +51,8 @@ class Pengajuan_model extends CI_Model
             if (($this->input->post('nama' . $i) != "")) {
                 $namaFoto = "";
                 if (!empty($_FILES['foto' . $i]["name"])) {
-                    $namaFoto = strtolower(time() . $_FILES['foto' . $i]['name']);
+
+                    $namaFoto = strtolower($_FILES['foto' . $i]['name']);
                     $config['upload_path']          = 'assets/uploads/foto/';
                     $config['allowed_types']        = 'png|jpg|jpeg';
                     $config['file_name'] = $namaFoto;
@@ -64,6 +65,7 @@ class Pengajuan_model extends CI_Model
                         die();
                     }
                 }
+
 
                 $datam = array(
                     'nama' => $this->input->post('nama' . $i),
@@ -101,11 +103,25 @@ class Pengajuan_model extends CI_Model
     {
         $this->db->where($this->id, $id);
         $this->db->update($this->table, $data);
-        
+
         for ($i = 0; $i < 5; $i++) {
+
+            $idtmp = $this->input->post('id' . $i);
+            if (($this->input->post('nama' . $i) != "")) {
                 $namaFoto = "";
                 if (!empty($_FILES['foto' . $i]["name"])) {
-                    $namaFoto = strtolower(time() . $_FILES['foto' . $i]['name']);
+
+                    
+                    $queryfoto = $this->db->select('foto')
+                        ->from('pengajuan_mahasiswa')
+                        ->where('pengajuan_m_id', $idtmp)
+                        ->get()
+                        ->row();
+
+                    $this->load->helper("file");
+                    unlink('assets/uploads/foto/' . $queryfoto->foto);
+
+                    $namaFoto = strtolower($_FILES['foto' . $i]['name']);
                     $config['upload_path']          = 'assets/uploads/foto/';
                     $config['allowed_types']        = 'png|jpg|jpeg';
                     $config['file_name'] = $namaFoto;
@@ -117,8 +133,8 @@ class Pengajuan_model extends CI_Model
                         echo $this->upload->display_errors() . " <=== " . $i . " === " . $namaFoto;
                         die();
                     }
+                }
                 
-
                 $datam = array(
                     'nama' => $this->input->post('nama' . $i),
                     'alamat' => $this->input->post('alamat' . $i),
@@ -130,19 +146,17 @@ class Pengajuan_model extends CI_Model
                 );
                 // print_r($this->input->post('nama' . $i));
                 // die();
-                $this->db->where($this->idmpengajuan, $id);
+                $this->db->where($this->idm, $idtmp);
                 $this->db->update($this->tablem, $datam);
-                // print_r($this->db->update($this->tablem, $datam));
-                // die();
             }
         }
 
         return $this->db->affected_rows();
-	}
+    }
 
     public function delete($id)
     {
-    
+
         $this->db->where($this->idmpengajuan, $id);
         $this->db->delete($this->tablem);
         $this->db->affected_rows();
@@ -151,7 +165,6 @@ class Pengajuan_model extends CI_Model
         $this->db->delete($this->table);
         return $this->db->affected_rows();
     }
-
 }
 
 /* End of file Person_model.php */

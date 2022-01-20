@@ -238,6 +238,7 @@ class Pengajuan extends MY_Controller
             ->where('pengajuan_id', $id)
             ->get()
             ->row();
+            
             $this->load->helper("file");
             unlink('assets/uploads/surat_pengantar/'. $querypengantar->surat_pengantar);
             $suratpengantarFileName = strtolower($_FILES["surat_pengantar"]['name']);
