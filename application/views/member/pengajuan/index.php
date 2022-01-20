@@ -1,3 +1,18 @@
+<html>
+<head>
+	<script type="text/javascript">
+		function ConfirmDialog() {
+			var x=confirm("Are you sure to delete record?")
+			if (x) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	</script>
+</head>
+<body>	
+
 
 <div class="table-responsive" style="padding-top: 6px">
 	<table class="table table-striped table-hover table-condensed" id="mytable" style="width: 100%">
@@ -26,9 +41,11 @@
 					<td><?= $pengajuan->prodi ?></td>
 					<!-- <td><?= $this->session->userdata('status_pengajuan') ?></td> -->
 					<td class="text-center" width="160px" style="padding-left: 20px;">
-						<?php echo anchor('member/pengajuan/detail/' . $pengajuan->pengajuan_id, 'Detail'); ?> |
-						<?php echo anchor('member/pengajuan/edit/' . $pengajuan->pengajuan_id, 'Update'); ?> |
-						<?php echo anchor('member/pengajuan/delete/' . $pengajuan->pengajuan_id, 'Delete'); ?>
+						<?php echo anchor('member/pengajuan/detail/' .$pengajuan->pengajuan_id, 'Detail'); ?> |
+						<?php echo anchor('member/pengajuan/edit/' .$pengajuan->pengajuan_id, 'Edit'); ?> |
+						<?php
+							echo anchor('member/pengajuan/delete/'.$pengajuan->pengajuan_id, 'Delete', array('class'=>'delete', 'onclick'=>"return ConfirmDialog();"));
+						?>
 					</td>
 				</tr>
 			<?php } ?>
@@ -36,3 +53,6 @@
 	</table>
 	<a href="pengajuan/add/"  class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Create</a>
 </div>
+
+</body>
+</html>

@@ -31,21 +31,18 @@ class Pengajuan extends MY_Controller
     {
         $data = konfigurasi('Tambah Pengajuan', 'Tambah Pengajuan');
         $this->template->load('layouts/template', 'member/pengajuan/create', $data);
-
     }
 
     public function createm()
     {
-        // $proposal    = $this->input->post('proposal');
-        // $surat_pengantar = $this->input->post('surat_pengantar');
         $nama = $this->input->post('nama');
         $alamat = $this->input->post('alamat');
         $nim    = $this->input->post('nim');
         $handphone = $this->input->post('handphone');
         $email    = $this->input->post('email');
         $foto = $this->input->post('foto');
-        
-        
+
+
         $data = [
             'nama'    => $nama,
             'alamat' => $alamat,
@@ -56,21 +53,6 @@ class Pengajuan extends MY_Controller
         ];
 
         $this->Pengajuan_model->insertm($data);
-
-        // if (!empty($_FILES['proposal']['name'])) {
-        //     $upload = $this->_do_upload();
-
-        //     //delete file
-        //     $user = $this->Pengajuan_model->get_by_id($this->session->userdata('id'));
-        //     if (file_exists('assets/uploads/proposal/' . $user->proposal) && $user->proposal) {
-        //         unlink('assets/uploads/proposal/' . $user->proposal);
-        //     }
-
-        //     $data['proposal'] = $upload;
-        // }
-
-        // $this->Pengajuan_model->insert($data);
-
         redirect('member/pengajuan');
     }
 
@@ -85,15 +67,15 @@ class Pengajuan extends MY_Controller
         $asal = $this->input->post('asal');
         $jurusan    = $this->input->post('jurusan');
         $prodi = $this->input->post('prodi');
-        
+
         $proposalFileName  = "";
         $suratpengantarFileName  = "";
-       // echo "<pre>";
-      //  print_r($_FILES);
-      //  die();
+        // echo "<pre>";
+        //  print_r($_FILES);
+        //  die();
 
-        if(!empty($_FILES['proposal'])){
-            $proposalFileName = strtolower(time().$_FILES["proposal"]['name']);
+        if (!empty($_FILES['proposal'])) {
+            $proposalFileName = strtolower(time() . $_FILES["proposal"]['name']);
             $config['upload_path']          = 'assets/uploads/proposal/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['file_name'] = $proposalFileName;
@@ -102,48 +84,61 @@ class Pengajuan extends MY_Controller
             $this->load->library('upload');
             $this->upload->initialize($config);
 
-            if(!$this->upload->do_upload('proposal')){
-                echo $this->upload->display_errors()." <== proposal"; die();
-            } 
+            if (!$this->upload->do_upload('proposal')) {
+                echo $this->upload->display_errors() . " <== proposal";
+                die();
+            }
         }
 
-        if(!empty($_FILES['surat_pengantar'])){
-            $suratpengantarFileName = strtolower(time().$_FILES["surat_pengantar"]['name']);
+        if (!empty($_FILES['surat_pengantar'])) {
+            $suratpengantarFileName = strtolower(time() . $_FILES["surat_pengantar"]['name']);
             $config['upload_path']          = 'assets/uploads/surat_pengantar/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['file_name'] = $suratpengantarFileName;
             //$config['max_size']             = 4096;
 
             $this->load->library('upload');
-                    $this->upload->initialize($config);
-        
-            if(!$this->upload->do_upload('surat_pengantar')){
-                echo  $this->upload->display_errors()." <== surat_pengantar"; die();
-            }  
+            $this->upload->initialize($config);
+
+            if (!$this->upload->do_upload('surat_pengantar')) {
+                echo  $this->upload->display_errors() . " <== surat_pengantar";
+                die();
+            }
         }
 
-        
 
-            $data = [
-                'proposal'    => $proposalFileName,
-                'surat_pengantar' => $suratpengantarFileName,
-                'topik'    => $topik,
-                'tanggal_mulai' => $tanggal_mulai,
-                'tanggal_selesai'    => $tanggal_selesai,
-                'asal' => $asal,
-                'jurusan'    => $jurusan,
-                'prodi' => $prodi,
-                'pengguna_id' => $this->session->userdata('pengguna_id'),
-            ];
-    
-            $this->Pengajuan_model->insert($data);
+
+        $data = [
+            'proposal'    => $proposalFileName,
+            'surat_pengantar' => $suratpengantarFileName,
+            'topik'    => $topik,
+            'tanggal_mulai' => $tanggal_mulai,
+            'tanggal_selesai'    => $tanggal_selesai,
+            'asal' => $asal,
+            'jurusan'    => $jurusan,
+            'prodi' => $prodi,
+            'pengguna_id' => $this->session->userdata('pengguna_id'),
+        ];
+        
+        $this->Pengajuan_model->insert($data);
         
         
         redirect('member/pengajuan');
     }
+    
+    
+    public function do_download_propo($data){				
+        $this->load->helper('download');
+        force_download('assets/uploads/proposal/'.$data,NULL);
+    }
 
+    public function do_download_supeng($data){				
+        $this->load->helper('download');
+        force_download('assets/uploads/surat_pengantar/'.$data,NULL);
+    }
 
-    function do_upload() {
+    function do_upload()
+    {
         // setting konfigurasi upload
         $config['upload_path'] = 'assets/uploads/proposal/';
         $config['allowed_types'] = 'doc|docx|pdf';
@@ -199,14 +194,79 @@ class Pengajuan extends MY_Controller
         redirect('member/pengajuan');
     }
 
+    public function updatePengajuan($id)
+    {
+        $data = array(
+            // 'username' => $this->input->post('username'),
+            'proposal' => $this->input->post('proposal'),
+            'surat_pengantar' => $this->input->post('surat_pengantar'),
+            'topik' => $this->input->post('topik'),
+            'tanggal_mulai' => $this->input->post('tanggal_mulai'),
+            'tanggal_selesai' => $this->input->post('tanggal_selesai'),
+            'asal' => $this->input->post('asal'),
+            'jurusan' => $this->input->post('jurusan'),
+            'prodi' => $this->input->post('prodi'),
+        );
+        // if ($this->form_validation->run() == true) {
+        $proposalFileName  = "";
+        $suratpengantarFileName  = "";
+        // echo "<pre>";
+        //  print_r($_FILES);
+        //  die();
+
+        if (!empty($_FILES['proposal'])) {
+            $proposalFileName = strtolower(time() . $_FILES["proposal"]['name']);
+            $config['upload_path']          = 'assets/uploads/proposal/';
+            $config['allowed_types']        = 'doc|docx|pdf';
+            $config['file_name'] = $proposalFileName;
+            //$config['max_size']             = 4096;
+
+            $this->load->library('upload');
+            $this->upload->initialize($config);
+
+            if (!$this->upload->do_upload('proposal')) {
+                echo $this->upload->display_errors() . " <== proposal";
+                die();
+            }
+        }
+
+        if (!empty($_FILES['surat_pengantar'])) {
+            $suratpengantarFileName = strtolower(time() . $_FILES["surat_pengantar"]['name']);
+            $config['upload_path']          = 'assets/uploads/surat_pengantar/';
+            $config['allowed_types']        = 'doc|docx|pdf';
+            $config['file_name'] = $suratpengantarFileName;
+            //$config['max_size']             = 4096;
+
+            $this->load->library('upload');
+            $this->upload->initialize($config);
+
+            if (!$this->upload->do_upload('surat_pengantar')) {
+                echo  $this->upload->display_errors() . " <== surat_pengantar";
+                die();
+            }
+        }
+
+        $result = $this->Pengajuan_model->update_pengajuan($data, $id);
+        if ($result > 0) {
+            // $this->updatePengajuan($id);
+            $this->session->set_flashdata('msg', show_succ_msg('Data Pengajuan Berhasil diubah'));
+            redirect('member/pengajuan');
+        } else {
+            $this->session->set_flashdata('msg', show_err_msg('Data Pengajuan Gagal diubah'));
+            redirect('member/pengajuan');
+        }
+        // } else {
+        //     $this->session->set_flashdata('msg', show_err_msg(validation_errors()));
+        //     redirect('auth/profile');
+        // }
+    }
+
     public function detail($id)
     {
         $data           = konfigurasi('Detail Pengajuan', 'Detail Pengajuan');
         $data['pengajuan'] = $this->Pengajuan_model->get_by_id($id);
         $data['pengajuan_mahasiswa'] = $this->Pengajuan_model->pengajuan_mahasiswa($id);
         $this->template->load('layouts/template', 'member/pengajuan/detail', $data);
-
-        
     }
 
     public function delete($id)
@@ -214,6 +274,7 @@ class Pengajuan extends MY_Controller
         $this->Pengajuan_model->delete($id);
         redirect('member/pengajuan');
     }
+
 }
 
-/* End of file Person.php */
+

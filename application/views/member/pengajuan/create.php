@@ -44,40 +44,6 @@
 					<input type="date" class="form-control" name="tanggal_selesai" placeholder="Tanggal Selesai">
 				</div>
 			</div>
-			<!-- <div class="form-group">
-				<label for="exampleInputEmail1">Proposal</label>
-				<input type="file" class="form-control" name="proposal" placeholder="Proposal">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Surat Pengantar</label>
-				<input type="file" class="form-control" name="surat_pengantar" placeholder="Surat Pengantar">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Topik</label>
-				<input type="text" class="form-control" name="topik" placeholder="Topik">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Tanggal Mulai</label>
-				<input type="date" class="form-control" name="tanggal_mulai" placeholder="Tanggal Mulai">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Tanggal Selesai</label>
-				<input type="date" class="form-control" name="tanggal_selesai" placeholder="Tanggal Selesai">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Instansi</label>
-				<input type="text" class="form-control" name="asal" placeholder="Instansi">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Jurusan</label>
-				<input type="text" class="form-control" name="jurusan" placeholder="Jurusan">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Prodi</label>
-				<input type="text" class="form-control" name="prodi" placeholder="Prodi">
-			</div> -->
-			<!-- <?php echo form_close() ?> -->
-
 		</div>
 	</div>
 	<br><br>

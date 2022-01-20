@@ -8,6 +8,7 @@ class Pengajuan_model extends CI_Model
 
     public $tablem = 'pengajuan_mahasiswa';
     public $idm    = 'pengajuan_mahasiswa.pengajuan_m_id';
+    public $idmpengajuan    = 'pengajuan_mahasiswa.pengajuan_id';
 
     public function get_by_id($id)
     {
@@ -124,14 +125,31 @@ class Pengajuan_model extends CI_Model
     {
         $this->db->update($this->table, $data, $where);
         return $this->db->affected_rows();
+
+        // $this->db->where($this->id, $id);
+        // $this->db->update($this->table, $data);
+        // return $this->db->affected_rows();
     }
+
+    public function update_pengajuan($data, $id)
+    {
+        $this->db->where($this->id, $id);
+        $this->db->update($this->table, $data);
+        return $this->db->affected_rows();
+	}
 
     public function delete($id)
     {
+    
+        $this->db->where($this->idmpengajuan, $id);
+        $this->db->delete($this->tablem);
+        $this->db->affected_rows();
+
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
         return $this->db->affected_rows();
     }
+
 }
 
 /* End of file Person_model.php */
