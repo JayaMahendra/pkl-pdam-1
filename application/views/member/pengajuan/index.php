@@ -42,7 +42,7 @@
 					<!-- <td><?= $this->session->userdata('status_pengajuan') ?></td> -->
 					<td class="text-center" width="160px" style="padding-left: 20px;">
 						<?php echo anchor('member/pengajuan/detail/' .$pengajuan->pengajuan_id, 'Detail'); ?> |
-						<?php echo anchor('member/pengajuan/edit/' .$pengajuan->pengajuan_id, 'Edit'); ?> |
+						<!-- <?php echo anchor('member/pengajuan/edit/' .$pengajuan->pengajuan_id, 'Edit'); ?> | -->
 						<?php
 							echo anchor('member/pengajuan/delete/'.$pengajuan->pengajuan_id, 'Delete', array('class'=>'delete', 'onclick'=>"return ConfirmDialog();"));
 						?>
