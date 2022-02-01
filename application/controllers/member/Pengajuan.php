@@ -16,15 +16,28 @@ class Pengajuan extends MY_Controller
     public function index()
     {
         $data = konfigurasi('Pengajuan', 'Kelola Pengajuan');
-        $data['pengajuans'] = $this->Pengajuan_model->get_all();
-        // print_r($this->session->userdata());
-        // die();
-        if ($this->session->userdata('status_pengajuan') == '1') {
+        $data['pengajuans'] = $this->Pengajuan_model->get_idx();
+
+        $this->db->select('status_pendaftaran');
+        $this->db->from('pengguna');
+        $this->db->where('pengguna_id', $this->session->userdata('pengguna_id'));
+        $status = $this->db->get()->row();
+
+        if ($status->status_pendaftaran == 1) {
             $this->template->load('layouts/template', 'member/pengajuan/create', $data);
         } else {
-            $this->template->load('layouts/template', 'member/pengajuan/index', $data);
+            // $this->template->load('layouts/template', 'member/pengajuan/detail/' . $data('pengajuan_id'));
+            // print_r($this->session->userdata('pengguna_id'));
+            // die();
+
+            // $data           = konfigurasi('Detail Pengajuan', 'Detail Pengajuan');
+            // $data['pengajuan'] = $this->Pengajuan_model->get_by_id($this->session->userdata('pengguna_id'));
+            // $data['pengajuan_mahasiswa'] = $this->Pengajuan_model->pengajuan_mahasiswa($this->session->userdata('pengguna_id'));
+            // $this->template->load('layouts/template', 'member/pengajuan/magang', $data);
+
+            $id = $this->db->select('pengajuan_id')->from('pengajuan')->where('pengguna_id', $this->session->userdata('pengguna_id'))->get()->row();
+            $this->detail($id->pengajuan_id);
         }
-        // $this->template->load('layouts/template', 'member/pengajuan/index', $data);
     }
 
     public function add()
@@ -60,7 +73,7 @@ class Pengajuan extends MY_Controller
 
     public function create()
     {
-        // $proposal = $_FILES['proposal'];
+        date_default_timezone_set('ASIA/JAKARTA');
         $proposal = $this->input->post('proposal');
         $surat_pengantar = $this->input->post('surat_pengantar');
         $topik    = $this->input->post('topik');
@@ -69,6 +82,7 @@ class Pengajuan extends MY_Controller
         $asal = $this->input->post('asal');
         $jurusan    = $this->input->post('jurusan');
         $prodi = $this->input->post('prodi');
+        $tanggal_pengajuan = date('d-m-Y H:i:s');
 
         $proposalFileName  = "";
         $suratpengantarFileName  = "";
@@ -108,8 +122,6 @@ class Pengajuan extends MY_Controller
             }
         }
 
-
-
         $data = [
             'proposal'    => $proposalFileName,
             'surat_pengantar' => $suratpengantarFileName,
@@ -119,13 +131,20 @@ class Pengajuan extends MY_Controller
             'asal' => $asal,
             'jurusan'    => $jurusan,
             'prodi' => $prodi,
+            'tanggal_pengajuan' => $tanggal_pengajuan,
             'pengguna_id' => $this->session->userdata('pengguna_id'),
         ];
 
         $this->Pengajuan_model->insert($data);
 
+        $data = array(
+            'status_pendaftaran'    => 2,
+        );
+        $this->db->where(['pengguna_id' => $this->session->userdata('pengguna_id')]);
+        $this->db->update('pengguna', $data);
 
-        redirect('member/pengajuan');
+        redirect($this->index());
+        // redirect($this->index());
     }
 
 
@@ -139,6 +158,12 @@ class Pengajuan extends MY_Controller
     {
         $this->load->helper('download');
         force_download('assets/uploads/surat_pengantar/' . $data, NULL);
+    }
+
+    public function do_download_balasan($data)
+    {
+        $this->load->helper('download');
+        force_download('assets/uploads/surat_balasan/' . $data, NULL);
     }
 
     function do_upload()
@@ -195,7 +220,7 @@ class Pengajuan extends MY_Controller
             'prodi' => $prodi,
         ];
         $this->Pengajuan_model->update(['pengguna_id' => $pengguna_id], $data);
-        redirect('member/pengajuan');
+        redirect('member/pengajuan/detail');
     }
 
     public function updatePengajuan($id)
@@ -209,14 +234,12 @@ class Pengajuan extends MY_Controller
 
         if (!empty($_FILES['proposal'])) {
             $queryproposal = $this->db->select('proposal')
-            ->from('pengajuan')
-            ->where('pengajuan_id', $id)
-            ->get()
-            ->row();
+                ->from('pengajuan')
+                ->where('pengajuan_id', $id)
+                ->get()
+                ->row();
 
-            $this->load->helper("file");
-            unlink('assets/uploads/proposal/'. $queryproposal->proposal);
-            $proposalFileName = strtolower($_FILES["proposal"]['name']);
+            $proposalFileName = strtolower(time() . $_FILES["proposal"]['name']);
             $config['upload_path']          = 'assets/uploads/proposal/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['file_name'] = $proposalFileName;
@@ -227,21 +250,23 @@ class Pengajuan extends MY_Controller
 
 
             if (!$this->upload->do_upload('proposal')) {
-                echo $this->upload->display_errors() . " Masukkan proposal";
-                die();
+                // echo $this->upload->display_errors() . " Masukkan proposal";
+                // die();
+                $proposalFileName  = $this->input->post('dataproposal');
+            } else {
+                $this->load->helper("file");
+                unlink('assets/uploads/proposal/' . $queryproposal->proposal);
             }
         }
 
         if (!empty($_FILES['surat_pengantar'])) {
             $querypengantar = $this->db->select('surat_pengantar')
-            ->from('pengajuan')
-            ->where('pengajuan_id', $id)
-            ->get()
-            ->row();
-            
-            $this->load->helper("file");
-            unlink('assets/uploads/surat_pengantar/'. $querypengantar->surat_pengantar);
-            $suratpengantarFileName = strtolower($_FILES["surat_pengantar"]['name']);
+                ->from('pengajuan')
+                ->where('pengajuan_id', $id)
+                ->get()
+                ->row();
+
+            $suratpengantarFileName = strtolower(time() . $_FILES["surat_pengantar"]['name']);
             $config['upload_path']          = 'assets/uploads/surat_pengantar/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['file_name'] = $suratpengantarFileName;
@@ -251,10 +276,15 @@ class Pengajuan extends MY_Controller
             $this->upload->initialize($config);
 
             if (!$this->upload->do_upload('surat_pengantar')) {
-                echo  $this->upload->display_errors() . "Masukkan surat_pengantar";
-                die();
-            } 
+                // echo  $this->upload->display_errors() . "Masukkan surat_pengantar";
+                // die();
+                $suratpengantarFileName = $this->input->post('datasurat');
+            } else {
+                $this->load->helper("file");
+                unlink('assets/uploads/surat_pengantar/' . $querypengantar->surat_pengantar);
+            }
         }
+
         $data = array(
             'proposal' => $proposalFileName,
             'surat_pengantar' => $suratpengantarFileName,

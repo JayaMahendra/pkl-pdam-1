@@ -5,6 +5,7 @@ class Pengajuan_model extends CI_Model
 {
     public $table = 'pengajuan';
     public $id    = 'pengajuan.pengajuan_id';
+    public $pengajuanpengguna = 'pengajuan.pengguna_id';
 
     public $tablem = 'pengajuan_mahasiswa';
     public $idm    = 'pengajuan_mahasiswa.pengajuan_m_id';
@@ -22,6 +23,14 @@ class Pengajuan_model extends CI_Model
     public function get_all()
     {
         $this->db->from($this->table);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_idx()
+    {
+        $this->db->from($this->table);
+        $this->db->where($this->pengajuanpengguna, $this->session->userdata('pengguna_id'));
         $query = $this->db->get();
         return $query->result();
     }
@@ -82,9 +91,6 @@ class Pengajuan_model extends CI_Model
 
         return  $result;
 
-
-
-
         // $this->db->insert($this->table, $data);
         // return $this->db->insert_id();
     }
@@ -111,17 +117,13 @@ class Pengajuan_model extends CI_Model
                 $namaFoto = "";
                 if (!empty($_FILES['foto' . $i]["name"])) {
 
-                    
                     $queryfoto = $this->db->select('foto')
                         ->from('pengajuan_mahasiswa')
                         ->where('pengajuan_m_id', $idtmp)
                         ->get()
                         ->row();
 
-                    $this->load->helper("file");
-                    unlink('assets/uploads/foto/' . $queryfoto->foto);
-
-                    $namaFoto = strtolower($_FILES['foto' . $i]['name']);
+                    $namaFoto = strtolower(time() . $_FILES['foto' . $i]['name']);
                     $config['upload_path']          = 'assets/uploads/foto/';
                     $config['allowed_types']        = 'png|jpg|jpeg';
                     $config['file_name'] = $namaFoto;
@@ -130,11 +132,15 @@ class Pengajuan_model extends CI_Model
                     $this->upload->initialize($config);
 
                     if (!$this->upload->do_upload('foto' . $i)) {
-                        echo $this->upload->display_errors() . " <=== " . $i . " === " . $namaFoto;
-                        die();
+                        // echo $this->upload->display_errors() . " <=== " . $i . " === " . $namaFoto;
+                        // die();
+                        $namaFoto = $this->input->post('datafoto' . $i);
+                    } else {
+                        $this->load->helper("file");
+                        unlink('assets/uploads/foto/' . $queryfoto->foto);
                     }
                 }
-                
+
                 $datam = array(
                     'nama' => $this->input->post('nama' . $i),
                     'alamat' => $this->input->post('alamat' . $i),

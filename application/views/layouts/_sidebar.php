@@ -7,7 +7,11 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel">
       <div class="pull-left image">
+        <?php if ($userdata->photo == NULL) {?>
+				<img src="<?php echo base_url('assets/uploads/images/foto_profil/usr.png'); ?>" class="img-circle">
+        <?php } else {?>
 				<img src="<?php echo base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" class="img-circle">
+        <?php } ?>
 			</div>
       <div class="pull-left info">
         <p><?php echo $this->session->userdata('username')?></p>

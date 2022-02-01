@@ -59,7 +59,7 @@ class Auth_model extends CI_Model
         'handphone' => $this->input->post('handphone'),
         'role_id' => '2',
         'tanggal_daftar' => date('Y-m-d H:i:s'),
-        'status_pengajuan' => '1',
+        'status_pendaftaran' => '1',
         'password' => get_hash($this->input->post('password'))
       );
       return $this->db->insert($this->table, $data);

@@ -1,9 +1,7 @@
 <form action="<?= base_url('member/pengajuan/create') ?>" method="post" enctype="multipart/form-data">
 	<div class="container-fluid">
 		<div>
-			<!-- <?php echo anchor('member/pengajuan', 'Back', 'class="btn btn-primary"'); ?> -->
 			<h1>FORM PENGAJUAN</h1>
-			<!-- <?php echo form_open_multipart('member/pengajuan/create') ?> -->
 			<div class="form-group">
 				<div class="form-group col-sm-6 flex-column d-flex">
 					<label for="exampleInputEmail1">Proposal</label>

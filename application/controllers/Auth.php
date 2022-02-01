@@ -35,9 +35,9 @@ class Auth extends MY_Controller
     public function update_pengajuan()
     {
         $id = $this->session->userdata('pengguna_id');
-        $appointment = array('status_pengajuan' => 2);
+        $appointment = array('status_pendaftaran' => 2);
         $this->db->where('id', $id);
-        $this->db->update('status_pengajuan', $appointment);
+        $this->db->update('status_pendaftaran', $appointment);
         $this->template->load('layouts/template', 'member/index');
     }
 
@@ -217,7 +217,7 @@ class Auth extends MY_Controller
                 'handphone'       => $query->handphone,
                 'photo'       => $query->photo,
                 'last_login'  => $query->last_login,
-                'status_pengajuan'  => $query->status_pengajuan,
+                'status_pendaftaran'  => $query->status_pendaftaran,
                 'pengguna_id'  => $query->pengguna_id,
 
                 //   'created_at'  => $query->created_at,

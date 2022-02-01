@@ -26,7 +26,6 @@ class Validasi extends MY_Controller
     {
         $data = konfigurasi('Tambah Pengajuan', 'Tambah Pengajuan');
         $this->template->load('layouts/template', 'member/pengajuan/create', $data);
-
     }
 
     public function create()
@@ -42,29 +41,31 @@ class Validasi extends MY_Controller
         $jurusan    = $this->input->post('jurusan');
         $prodi = $this->input->post('prodi');
 
-        if($proposal=''){
+        if ($proposal = '') {
             $config['upload_path']          = 'assets/uploads/proposal/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['max_size']             = 4096;
 
             $this->load->library('upload', $config);
-            if(!$this->upload->do_upload('proposal')){
-                echo "Upload gagal"; die();
+            if (!$this->upload->do_upload('proposal')) {
+                echo "Upload gagal";
+                die();
             } else {
-                $proposal=$this->upload->data('proposal');
+                $proposal = $this->upload->data('proposal');
             }
         }
 
-        if($surat_pengantar=''){
+        if ($surat_pengantar = '') {
             $config['upload_path']          = 'assets/uploads/surat_pengantar/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['max_size']             = 4096;
 
             $this->load->library('upload', $config);
-            if(!$this->upload->do_upload('surat_pengantar')){
-                echo "Upload gagal"; die();
+            if (!$this->upload->do_upload('surat_pengantar')) {
+                echo "Upload gagal";
+                die();
             } else {
-                $surat_pengantar=$this->upload->data('surat_pengantar');
+                $surat_pengantar = $this->upload->data('surat_pengantar');
             }
         }
 
@@ -115,7 +116,8 @@ class Validasi extends MY_Controller
     //     return $this->upload->data('file_name');
     // }
 
-    function do_upload() {
+    function do_upload()
+    {
         // setting konfigurasi upload
         $config['upload_path'] = 'assets/uploads/proposal/';
         $config['allowed_types'] = 'doc|docx|pdf';
@@ -171,11 +173,74 @@ class Validasi extends MY_Controller
         redirect('member/pengajuan');
     }
 
+    public function validasi_Pengajuan($id)
+    {
+        date_default_timezone_set('ASIA/JAKARTA');
+
+        $idtmp = $this->input->post('idtmp');
+
+        $suratbalasanFileName  = "";
+        if (!empty($_FILES['surat_balasan'])) {
+            $querybalasan = $this->db->select('surat_balasan')
+                ->from('pengajuan')
+                ->where('pengajuan_id', $id)
+                ->get()
+                ->row();
+
+            $suratbalasanFileName = strtolower(time() . $_FILES["surat_balasan"]['name']);
+            $config['upload_path']          = 'assets/uploads/surat_balasan/';
+            $config['allowed_types']        = 'doc|docx|pdf';
+            $config['file_name'] = $suratbalasanFileName;
+            //$config['max_size']             = 4096;
+
+            $this->load->library('upload');
+            $this->upload->initialize($config);
+
+
+            if (!$this->upload->do_upload('surat_balasan')) {
+                // echo $this->upload->display_errors() . " Masukkan proposal";
+                // die();
+                $suratbalasanFileName  = $this->input->post('databalasan');
+            } else {
+                $this->load->helper("file");
+                unlink('assets/uploads/surat_balasan/' . $querybalasan->surat_balasan);
+            }
+        }
+
+        $data = array(
+            'tanggal_disetujui'    => date('d-m-Y H:i:s'),
+            'surat_balasan' => $suratbalasanFileName,
+        );
+        $this->db->where(['pengguna_id' => $idtmp]);
+        $this->db->update('pengajuan', $data);
+
+        redirect('admin/validasi');
+    }
+
+    public function do_download_propo($data)
+    {
+        $this->load->helper('download');
+        force_download('assets/uploads/proposal/' . $data, NULL);
+    }
+
+    public function do_download_supeng($data)
+    {
+        $this->load->helper('download');
+        force_download('assets/uploads/surat_pengantar/' . $data, NULL);
+    }
+
+    public function do_download_balasan($data)
+    {
+        $this->load->helper('download');
+        force_download('assets/uploads/surat_balasan/' . $data, NULL);
+    }
+
     public function detail($id)
     {
         $data           = konfigurasi('Detail Pengajuan', 'Detail Pengajuan');
         $data['pengajuan'] = $this->Pengajuan_model->get_by_id($id);
-        $this->template->load('layouts/template', 'member/pengajuan/detail', $data);
+        $data['pengajuan_mahasiswa'] = $this->Pengajuan_model->pengajuan_mahasiswa($id);
+        $this->template->load('layouts/template', 'admin/validasi/detail', $data);
     }
 
     public function delete($id)

@@ -131,14 +131,24 @@
 			<!-- User Account: style can be found in dropdown.less -->
 			<li class="dropdown user user-menu">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="<?= base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" class="user-image">
+					<?php if ($userdata->photo == NULL) {?>
+							<img src="<?php echo base_url('assets/uploads/images/foto_profil/usr.png'); ?>" class="user-image">
+					<?php } else {?>
+							<img src="<?php echo base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" class="user-image">
+					<?php } ?>
+                <!-- <img src="<?= base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" class="user-image"> -->
                 <span class="hidden-xs"><?= $userdata->nama; ?></span>
             </a>
 				<ul class="dropdown-menu">
 					<!-- User image -->
 					<li class="user-header">
 						<!--/'.$userdata->photo Dinamis -->
-						<img src="<?= base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" class="img-circle">
+						<?php if ($userdata->photo == NULL) {?>
+								<img src="<?php echo base_url('assets/uploads/images/foto_profil/usr.png'); ?>" class="user-image">
+						<?php } else {?>
+								<img src="<?php echo base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" class="user-image">
+						<?php } ?>
+						<!-- <img src="<?= base_url('assets/uploads/images/foto_profil/'.$userdata->photo); ?>" class="img-circle"> -->
 						<p>
 							<?= $userdata->email; ?>
 							<small>Terakhir Masuk , <?= $userdata->last_login; ?></small>
