@@ -16,10 +16,28 @@ class Validasi extends MY_Controller
     public function index()
     {
         $data = konfigurasi('Pengajuan', 'Kelola Pengajuan');
-        $data['pengajuans'] = $this->Pengajuan_model->get_all();
+        $data['pengajuans'] = $this->Pengajuan_model->get_belum_setuju();
         // print_r($this->session->userdata());
         // die();
         $this->template->load('layouts/template', 'admin/validasi/index', $data);
+    }
+
+    public function index_setuju()
+    {
+        $data = konfigurasi('Pengajuan', 'Pengajuan Disetujui');
+        $data['pengajuans'] = $this->Pengajuan_model->get_setuju();
+        // print_r($this->session->userdata());
+        // die();
+        $this->template->load('layouts/template', 'admin/validasi/disetujui', $data);
+    }
+
+    public function index_riwayat()
+    {
+        $data = konfigurasi('Pengajuan', 'Riwayat Pengajuan');
+        $data['pengajuans'] = $this->Pengajuan_model->get_riwayat();
+        // print_r($this->session->userdata());
+        // die();
+        $this->template->load('layouts/template', 'admin/validasi/riwayat', $data);
     }
 
     public function add()
@@ -82,39 +100,8 @@ class Validasi extends MY_Controller
 
         $this->Pengajuan_model->insert($data);
 
-        // if (!empty($_FILES['proposal']['name'])) {
-        //     $upload = $this->_do_upload();
-
-        //     //delete file
-        //     $user = $this->Pengajuan_model->get_by_id($this->session->userdata('id'));
-        //     if (file_exists('assets/uploads/proposal/' . $user->proposal) && $user->proposal) {
-        //         unlink('assets/uploads/proposal/' . $user->proposal);
-        //     }
-
-        //     $data['proposal'] = $upload;
-        // }
-
-        $this->Pengajuan_model->insert($data);
-
         redirect('member/pengajuan');
     }
-
-    // private function _do_upload()
-    // {
-    //     $config['upload_path']          = 'assets/uploads/proposal/';
-    //     $config['allowed_types']        = 'doc|docx|pdf';
-    //     $config['max_size']             = 4096; //set max size allowed in Kilobyte
-    //     // $config['max_width']            = 1000; // set max width image allowed
-    //     // $config['max_height']           = 1000; // set max height allowed
-    //     // $config['file_name']            = round(microtime(true) * 1000);
-    //     $this->load->library('upload', $config);
-
-    //     if (!$this->upload->do_upload('proposal')) {
-    //         $this->session->set_flashdata('msg', $this->upload->display_errors('', ''));
-    //         redirect('member/pengajuan');
-    //     }
-    //     return $this->upload->data('file_name');
-    // }
 
     function do_upload()
     {
@@ -179,7 +166,36 @@ class Validasi extends MY_Controller
 
         $idtmp = $this->input->post('idtmp');
 
+        $data = array(
+            'tanggal_disetujui'    => date('d-m-Y H:i:s')
+        );
+        $check = $this->db->select('tanggal_disetujui')->from('pengajuan')->where('pengajuan_id', $id)->get()->row()->tanggal_disetujui;
+        if ($check == null) {
+            $sisa = $this->db->select('sisa_slot')->from('slot')->get()->row()->sisa_slot;
+            $new = $sisa - 1;
+            $dataslot = array(
+                'sisa_slot' => $new,
+            );
+            $this->db->where('sisa_slot', $sisa);
+            $this->db->update('slot', $dataslot);
+            $this->db->affected_rows();
+        }
+
+        $this->db->where(['pengguna_id' => $idtmp]);
+        $this->db->update('pengajuan', $data);
+
+        redirect('admin/validasi');
+    }
+
+    public function update_disetujui($id)
+    {
+        date_default_timezone_set('ASIA/JAKARTA');
+
+        $idtmp = $this->input->post('idtmp');
+
         $suratbalasanFileName  = "";
+        $sertifikatFileName  = "";
+
         if (!empty($_FILES['surat_balasan'])) {
             $querybalasan = $this->db->select('surat_balasan')
                 ->from('pengajuan')
@@ -207,10 +223,58 @@ class Validasi extends MY_Controller
             }
         }
 
+        if (!empty($_FILES['sertifikat'])) {
+            $querysertifikat = $this->db->select('sertifikat')
+                ->from('pengajuan')
+                ->where('pengajuan_id', $id)
+                ->get()
+                ->row();
+
+            $sertifikatFileName = strtolower(time() . $_FILES["sertifikat"]['name']);
+            $config['upload_path']          = 'assets/uploads/sertifikat/';
+            $config['allowed_types']        = '*';
+            $config['file_name'] = $sertifikatFileName;
+            //$config['max_size']             = 4096;
+
+            $this->load->library('upload');
+            $this->upload->initialize($config);
+
+            if (!$this->upload->do_upload('sertifikat')) {
+                // echo  $this->upload->display_errors() . "Masukkan sertifikat";
+                // die();
+                // $sertifikatFileName = $this->input->post('datasertif');
+                $sertifikatFileName = null;
+            } else {
+                $sisa = $this->db->select('sisa_slot')->from('slot')->get()->row()->sisa_slot;
+                $new = $sisa + 1;
+                $dataslot = array(
+                    'sisa_slot' => $new,
+                );
+                $this->db->where('sisa_slot', $sisa);
+                $this->db->update('slot', $dataslot);
+                $this->db->affected_rows();
+                
+                $this->load->helper("file");
+                unlink('assets/uploads/sertifikat/' . $querysertifikat->sertifikat);
+            }
+        }
+
         $data = array(
-            'tanggal_disetujui'    => date('d-m-Y H:i:s'),
             'surat_balasan' => $suratbalasanFileName,
+            'sertifikat' => $sertifikatFileName
         );
+        $check = $this->db->select('tanggal_disetujui')->from('pengajuan')->where('pengajuan_id', $id)->get()->row()->tanggal_disetujui;
+        if ($check == null) {
+            $sisa = $this->db->select('sisa_slot')->from('slot')->get()->row()->sisa_slot;
+            $new = $sisa - 1;
+            $dataslot = array(
+                'sisa_slot' => $new,
+            );
+            $this->db->where('sisa_slot', $sisa);
+            $this->db->update('slot', $dataslot);
+            $this->db->affected_rows();
+        }
+
         $this->db->where(['pengguna_id' => $idtmp]);
         $this->db->update('pengajuan', $data);
 
@@ -235,6 +299,12 @@ class Validasi extends MY_Controller
         force_download('assets/uploads/surat_balasan/' . $data, NULL);
     }
 
+    public function do_download_sertifikat($data)
+    {
+        $this->load->helper('download');
+        force_download('assets/uploads/sertifikat/' . $data, NULL);
+    }
+
     public function detail($id)
     {
         $data           = konfigurasi('Detail Pengajuan', 'Detail Pengajuan');
@@ -243,11 +313,57 @@ class Validasi extends MY_Controller
         $this->template->load('layouts/template', 'admin/validasi/detail', $data);
     }
 
+    public function detail_disetujui($id)
+    {
+        $data           = konfigurasi('Detail Pengajuan', 'Detail Pengajuan');
+        $data['pengajuan'] = $this->Pengajuan_model->get_by_id($id);
+        $data['pengajuan_mahasiswa'] = $this->Pengajuan_model->pengajuan_mahasiswa($id);
+        $this->template->load('layouts/template', 'admin/validasi/detail_disetujui', $data);
+    }
+
+    public function detail_riwayat($id)
+    {
+        $data           = konfigurasi('Detail Pengajuan', 'Detail Pengajuan');
+        $data['pengajuan'] = $this->Pengajuan_model->get_by_id($id);
+        $data['pengajuan_mahasiswa'] = $this->Pengajuan_model->pengajuan_mahasiswa($id);
+        $this->template->load('layouts/template', 'admin/validasi/detail_riwayat', $data);
+    }
+
     public function delete($id)
     {
         $this->Pengajuan_model->delete($id);
         redirect('member/pengajuan');
     }
+
+    public function search()
+	{
+        $data = konfigurasi('Pengajuan', 'Kelola Pengajuan');
+        $keyword = $this->input->post('keyword');
+		$data['pengajuans']=$this->Pengajuan_model->search($keyword);
+		$this->template->load('layouts/template', 'admin/validasi/index', $data);
+        // print_r($keyword);
+        // die();
+	}
+
+    public function search_disetujui()
+	{
+        $data = konfigurasi('Pengajuan', 'Pengajuan Disetujui');
+        $keyword = $this->input->post('keyword');
+		$data['pengajuans']=$this->Pengajuan_model->search_disetujui($keyword);
+		$this->template->load('layouts/template', 'admin/validasi/disetujui', $data);
+        // print_r($keyword);
+        // die();
+	}
+
+    public function search_riwayat()
+	{
+        $data = konfigurasi('Pengajuan', 'Riwayat Pengajuan');
+        $keyword = $this->input->post('keyword');
+		$data['pengajuans']=$this->Pengajuan_model->search_riwayat($keyword);
+		$this->template->load('layouts/template', 'admin/validasi/riwayat', $data);
+        // print_r($keyword);
+        // die();
+	}
 }
 
 /* End of file Person.php */

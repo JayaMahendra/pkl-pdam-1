@@ -1,4 +1,3 @@
-
 <div class="container bootstrap snippets bootdey">
 	<div class="row ng-scope">
 		<div>
@@ -65,14 +64,22 @@
 										<input class="form-control" name="tanggal_disetujui" type="text" value="<?= $pengajuan->tanggal_disetujui ?>" disabled>
 									</div>
 								</div>
-								<div class="form-group">
+								<!-- <div class="form-group">
 									<label class="col-sm-2 control-label">Surat Balasan</label>
 									<div class="col-sm-10">
 										<a name="balasantmp" class="form-control" href="<?php echo base_url() . 'admin/validasi/do_download_balasan/' . $pengajuan->surat_balasan ?>"><?= $pengajuan->surat_balasan ?></a>
-										<input type="file" class="form-control" name="surat_balasan">
+										<input type="file" class="form-control" name="surat_balasan" accept=".docx,.doc,.pdf">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Sertifikat (zip/rar)</label>
+									<div class="col-sm-10">
+										<a name="sertifikattmp" class="form-control" href="<?php echo base_url() . 'admin/validasi/do_download_sertifikat/' . $pengajuan->sertifikat ?>"><?= $pengajuan->sertifikat ?></a>
+										<input type="file" class="form-control" name="sertifikat" accept=".zip,.rar,.7zip">
 									</div>
 								</div>
 								<input type="hidden" name="databalasan" value="<?= $pengajuan->surat_balasan ?>">
+								<input type="hidden" name="datasertif" value="<?= $pengajuan->sertifikat ?>"> -->
 								<input type="text" name="idtmp" value="<?= $pengajuan->pengguna_id ?>" style='border:0 ; display:	none'>
 							</div>
 						</div>
@@ -103,7 +110,7 @@
 										<td><input type='text' name='alamat$i' value='$item->alamat' style='border:0' disabled></td>
 										<td><input type='text' name='email$i' value='$item->email' style='border:0' disabled></td>
 										<td><input type='text' name='handphone$i' value='$item->handphone' style='border:0' disabled></td>
-										<td><img src='".base_url('assets/uploads/foto/').$item->foto."' width='42' height='42' disabled></td>
+										<td><img src='" . base_url('assets/uploads/foto/') . $item->foto . "' width='42' height='42' disabled></td>
 										</tr>";
 										$i++;
 									} ?>
@@ -113,7 +120,16 @@
 							<!-- </form> -->
 						</div>
 						<!-- <button class="btn btn-primary" type="submit">Update</button> -->
-						<button class="btn btn-success" type="submit">Setujui</button>
+						<?php if($pengajuan->tanggal_disetujui == null) { ?>
+						<button type="submit" class="btn btn-success" onclick="return ConfirmSetuju()">Terima</button>
+						<?php } ?>
+						<!-- <button class="btn btn-danger" onclick="ConfirmReject()" value=""> -->
+							<?php
+							echo anchor('admin/validasi/delete/' . $pengajuan->pengajuan_id, 'Tolak', array('class' => 'delete btn btn-danger', 'onclick' => "return ConfirmReject();"));
+							?>
+						<!-- </button> -->
+						<!-- <a onclick="return ConfirmTolak()" href="<?php echo base_url() . 'admin/validasi/delete/' . $pengajuan->pengajuan_id ?>" class="btn btn-danger">Tolak</a> -->
+
 					</form>
 					<!-- <button class="btn btn-danger" type="submit">Tolak</button> -->
 				</div>

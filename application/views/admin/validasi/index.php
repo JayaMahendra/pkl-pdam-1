@@ -1,3 +1,16 @@
+<div class="row">
+	<div class="col-xs-4 col-xs-offset-4">
+		<form action="<?= base_url('admin/validasi/search') ?>" method="post">
+			<div class="input-group">
+				<input type="text" class="form-control" name="keyword" placeholder="Masukan Kata Kunci...">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="submit">Cari</button>
+				</span>
+			</div>
+		</form>
+	</div>
+</div>
+
 <div class="table-responsive" style="padding-top: 6px">
 	<table class="table table-striped table-hover table-condensed" id="mytable" style="width: 100%">
 		<thead>
@@ -41,6 +54,7 @@
 					</td>
 					<td class="text-center" width="160px" style="padding-left: 20px;">
 						<?php echo anchor('admin/validasi/detail/' . $pengajuan->pengajuan_id, 'Detail'); ?>
+						<input hidden type="text" name="idpeng" value="<? $pengajuan->pengajuan_id ?>">
 					</td>
 				</tr>
 			<?php } ?>

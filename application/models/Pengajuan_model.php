@@ -3,6 +3,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Pengajuan_model extends CI_Model
 {
+    public $tablep = 'pengguna';
+    public $idp = 'pengguna.pengajuan_id';
+    public $idpp = 'pengguna.pengguna_id';
+
     public $table = 'pengajuan';
     public $id    = 'pengajuan.pengajuan_id';
     public $pengajuanpengguna = 'pengajuan.pengguna_id';
@@ -32,6 +36,25 @@ class Pengajuan_model extends CI_Model
         $this->db->from($this->table);
         $this->db->where($this->pengajuanpengguna, $this->session->userdata('pengguna_id'));
         $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_setuju()
+    {
+        // $query = $this -> db -> get_where('pengajuan', array('tanggal_disetujui !=' => NULL));
+        $query = $this->db->where(array('tanggal_disetujui !=' => NULL))->where(array('sertifikat =' => NULL))->get('pengajuan');
+        return $query->result();
+    }
+
+    public function get_belum_setuju()
+    {
+        $query = $this->db->get_where('pengajuan', array('tanggal_disetujui' => NULL));
+        return $query->result();
+    }
+
+    public function get_riwayat()
+    {
+        $query = $this->db->get_where('pengajuan', array('sertifikat !=' => NULL));
         return $query->result();
     }
 
@@ -86,6 +109,12 @@ class Pengajuan_model extends CI_Model
                     'pengajuan_id' => $idpengajuan,
                 );
                 $this->db->insert($this->tablem, $datam);
+
+                $datap = array(
+                    'pengajuan_id' => $idpengajuan,
+                );
+                $this->db->where($this->idpp, $this->session->userdata('pengguna_id'));
+                $this->db->update($this->tablep, $datap);
             }
         }
 
@@ -163,6 +192,20 @@ class Pengajuan_model extends CI_Model
     public function delete($id)
     {
 
+        $idpp = $this->input->post('idpeng');
+        // print_r($this->idp);
+        // die();
+
+        $datap = array(
+            'status_pendaftaran' => 3,
+            'pengajuan_id' => null
+            // 'pengajuan_id' => $idpengajuan,
+        );
+
+        $this->db->where($this->idp, $id);
+        $this->db->update($this->tablep, $datap);
+        // $this->db->affected_rows();
+
         $this->db->where($this->idmpengajuan, $id);
         $this->db->delete($this->tablem);
         $this->db->affected_rows();
@@ -170,6 +213,60 @@ class Pengajuan_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->delete($this->table);
         return $this->db->affected_rows();
+    }
+
+    public function search($keyword)
+    {
+        // $this->db->select('*');
+        // $this->db->from('pengajuan');
+        // if(!empty($keyword)){
+        //     $this->db->like('proposal', $keyword);
+        //     $this->db->or_like('surat_pengantar', $keyword);
+        //     $this->db->or_like('topik', $keyword);
+        //     $this->db->or_like('asal', $keyword);
+        //     $this->db->or_like('jurusan', $keyword);
+        //     $this->db->or_like('prodi', $keyword);
+        // }
+        // return $this->db->get()->result();
+
+        $where = "tanggal_disetujui is null and proposal like '%$keyword' or tanggal_disetujui is null and surat_pengantar like '%$keyword' or tanggal_disetujui is null and topik like '%$keyword' or tanggal_disetujui is null and asal like '%$keyword' or tanggal_disetujui is null and jurusan like '%$keyword' or tanggal_disetujui is null and prodi like '%$keyword'";
+        $notwhere = "tanggal_disetujui is null";
+        $this->db->select('*');
+        $this->db->from('pengajuan');
+        if(!empty($keyword)){
+            $this->db->where($where);
+        } else {
+            $this->db->where($notwhere);
+        }
+        return $this->db->get()->result();
+    }
+
+    public function search_disetujui($keyword)
+    {
+        $where = "proposal like '$keyword' or surat_pengantar like '$keyword' or topik like '$keyword' or asal like '$keyword' or jurusan like '$keyword' or prodi like '$keyword' and tanggal_disetujui is not null and sertifikat is null";
+        $notwhere = "tanggal_disetujui is not null and sertifikat is null";
+        $this->db->select('*');
+        $this->db->from('pengajuan');
+        if(!empty($keyword)){
+            $this->db->where($where);
+        } else {
+            $this->db->where($notwhere);
+        }
+        return $this->db->get()->result();
+    }
+
+    public function search_riwayat($keyword)
+    {
+        $where = "proposal like '$keyword' or surat_pengantar like '$keyword' or topik like '$keyword' or asal like '$keyword' or jurusan like '$keyword' or prodi like '$keyword' and sertifikat is not null";
+        $notwhere = "sertifikat is not null";
+        $this->db->select('*');
+        $this->db->from('pengajuan');
+        if(!empty($keyword)){
+            $this->db->where($where);
+        } else {
+            $this->db->where($notwhere);
+        }
+        return $this->db->get()->result();
     }
 }
 

@@ -5,11 +5,11 @@
 			<div class="form-group">
 				<div class="form-group col-sm-6 flex-column d-flex">
 					<label for="exampleInputEmail1">Proposal</label>
-					<input type="file" class="form-control" name="proposal" placeholder="Proposal">
+					<input type="file" class="form-control" name="proposal" placeholder="Proposal" accept=".docx,.doc,.pdf">
 				</div>
 				<div class="form-group col-sm-6 flex-column d-flex">
 					<label for="exampleInputPassword1">Surat Pengantar</label>
-					<input type="file" class="form-control" name="surat_pengantar" placeholder="Surat Pengantar">
+					<input type="file" class="form-control" name="surat_pengantar" placeholder="Surat Pengantar" accept=".docx,.doc,.pdf">
 				</div>
 			</div>
 			<div class="form-group">
@@ -68,7 +68,7 @@
 					<td><input type="text" name="alamat0" style="border: 0;"></td>
 					<td><input type="text" name="email0" style="border: 0;"></td>
 					<td><input type="text" name="handphone0" style="border: 0;"></td>
-					<td><input type="file" name="foto0" style="border: 0;"></td>
+					<td><input type="file" name="foto0" accept=".jpeg,.jpg,.png" style="border: 0;"></td>
 				</tr>
 				<tr>
 					<th scope="row">2</th>
@@ -77,7 +77,7 @@
 					<td><input type="text" name="alamat1" style="border: 0;"></td>
 					<td><input type="text" name="email1" style="border: 0;"></td>
 					<td><input type="text" name="handphone1" style="border: 0;"></td>
-					<td><input type="file" name="foto1" style="border: 0;"></td>
+					<td><input type="file" name="foto1" accept=".jpeg,.jpg,.png" style="border: 0;"></td>
 				</tr>
 
 				<tr>
@@ -87,7 +87,7 @@
 					<td><input type="text" name="alamat2" style="border: 0;"></td>
 					<td><input type="text" name="email2" style="border: 0;"></td>
 					<td><input type="text" name="handphone2" style="border: 0;"></td>
-					<td><input type="file" name="foto2" style="border: 0;"></td>
+					<td><input type="file" name="foto2" accept=".jpeg,.jpg,.png" style="border: 0;"></td>
 				</tr>
 				<tr>
 					<th scope="row">4</th>
@@ -96,7 +96,7 @@
 					<td><input type="text" name="alamat3" style="border: 0;"></td>
 					<td><input type="text" name="email3" style="border: 0;"></td>
 					<td><input type="text" name="handphone3" style="border: 0;"></td>
-					<td><input type="file" name="foto3" style="border: 0;"></td>
+					<td><input type="file" name="foto3" accept=".jpeg,.jpg,.png" style="border: 0;"></td>
 				</tr>
 				<tr>
 					<th scope="row">5</th>
@@ -105,7 +105,7 @@
 					<td><input type="text" name="alamat4" style="border: 0;"></td>
 					<td><input type="text" name="email4" style="border: 0;"></td>
 					<td><input type="text" name="handphone4" style="border: 0;"></td>
-					<td><input type="file" name="foto4" style="border: 0;"></td>
+					<td><input type="file" name="foto4" accept=".jpeg,.jpg,.png" style="border: 0;"></td>
 				</tr>
 			</tbody>
 		</table>
