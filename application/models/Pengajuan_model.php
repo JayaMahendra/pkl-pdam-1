@@ -229,7 +229,7 @@ class Pengajuan_model extends CI_Model
         // }
         // return $this->db->get()->result();
 
-        $where = "tanggal_disetujui is null and proposal like '%$keyword' or tanggal_disetujui is null and surat_pengantar like '%$keyword' or tanggal_disetujui is null and topik like '%$keyword' or tanggal_disetujui is null and asal like '%$keyword' or tanggal_disetujui is null and jurusan like '%$keyword' or tanggal_disetujui is null and prodi like '%$keyword'";
+        $where = "tanggal_disetujui is null and proposal like '%$keyword%' or tanggal_disetujui is null and surat_pengantar like '%$keyword%' or tanggal_disetujui is null and topik like '%$keyword%' or tanggal_disetujui is null and asal like '%$keyword%' or tanggal_disetujui is null and jurusan like '%$keyword%' or tanggal_disetujui is null and prodi like '%$keyword%'";
         $notwhere = "tanggal_disetujui is null";
         $this->db->select('*');
         $this->db->from('pengajuan');
@@ -243,7 +243,7 @@ class Pengajuan_model extends CI_Model
 
     public function search_disetujui($keyword)
     {
-        $where = "proposal like '$keyword' or surat_pengantar like '$keyword' or topik like '$keyword' or asal like '$keyword' or jurusan like '$keyword' or prodi like '$keyword' and tanggal_disetujui is not null and sertifikat is null";
+        $where = "tanggal_disetujui is not null and sertifikat is null and proposal like '%$keyword%' or tanggal_disetujui is not null and sertifikat is null and surat_pengantar like '%$keyword%' or tanggal_disetujui is not null and sertifikat is null and topik like '%$keyword%' or tanggal_disetujui is not null and sertifikat is null and asal like '%$keyword%' or tanggal_disetujui is not null and sertifikat is null and jurusan like '%$keyword%' or tanggal_disetujui is not null and sertifikat is null and prodi like '%$keyword%'";
         $notwhere = "tanggal_disetujui is not null and sertifikat is null";
         $this->db->select('*');
         $this->db->from('pengajuan');
@@ -257,7 +257,7 @@ class Pengajuan_model extends CI_Model
 
     public function search_riwayat($keyword)
     {
-        $where = "proposal like '$keyword' or surat_pengantar like '$keyword' or topik like '$keyword' or asal like '$keyword' or jurusan like '$keyword' or prodi like '$keyword' and sertifikat is not null";
+        $where = "sertifikat is not null and proposal like '%$keyword%' or sertifikat is not null and surat_pengantar like '%$keyword%' or sertifikat is not null and topik like '%$keyword%' or sertifikat is not null and asal like '%$keyword%' or sertifikat is not null and jurusan like '%$keyword%' or sertifikat is not null and prodi like '%$keyword%'";
         $notwhere = "sertifikat is not null";
         $this->db->select('*');
         $this->db->from('pengajuan');
