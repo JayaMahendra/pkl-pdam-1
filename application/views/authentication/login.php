@@ -1,6 +1,9 @@
 <div class="login-box">
 	<div class="login-logo">
-		<h1 style="font-weight:bold"><center>PENDAFTARAN</center></h1>
+		<!-- <h1 style="font-weight:bold"><center>PENDAFTARAN MAGANG</center></h1> -->
+		<img src="../assets/vendor/logo/pdam.png" style="height: 100px;">
+		<!-- <h3 style=""><center>PERUMDA TUGU TIRTA</center></h1>
+		<h1 style="font-weight:bold"><center>KOTA MALANG</center></h1> -->
 	</div>
 	<!-- /.login-logo -->
 	<div class="login-box-body">

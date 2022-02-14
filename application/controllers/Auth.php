@@ -315,7 +315,7 @@ class Auth extends MY_Controller
     {
         date_default_timezone_set('ASIA/JAKARTA');
         $date = array('last_login' => date('Y-m-d H:i:s'));
-        $id = $this->session->userdata('id');
+        $id = $this->session->userdata('pengguna_id');
         $this->Auth_model->logout($date, $id);
         $user_data = $this->session->userdata();
         foreach ($user_data as $key => $value) {

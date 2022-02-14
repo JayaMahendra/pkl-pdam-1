@@ -16,6 +16,8 @@
 	<script src="<?php echo base_url('assets');?>/vendor/jquery/jquery.min.js"></script>
 </head>
 
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
 <body class="hold-transition register-page">
 	<div class="wrapper">
 		<?php echo $contents ;?>

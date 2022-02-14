@@ -25,6 +25,8 @@ class Pengajuan extends MY_Controller
 
         if ($status->status_pendaftaran == 1) {
             $this->template->load('layouts/template', 'member/pengajuan/create', $data);
+        } else if($status->status_pendaftaran == 3){
+            $this->template->load('layouts/template', 'member/pengajuan/penolakan', $data);
         } else {
             // $this->template->load('layouts/template', 'member/pengajuan/detail/' . $data('pengajuan_id'));
             // print_r($this->session->userdata('pengguna_id'));
@@ -91,7 +93,7 @@ class Pengajuan extends MY_Controller
         //  die();
 
         if (!empty($_FILES['proposal'])) {
-            $proposalFileName = strtolower($_FILES["proposal"]['name']);
+            $proposalFileName = strtolower(time().$_FILES["proposal"]['name']);
             $config['upload_path']          = 'assets/uploads/proposal/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['file_name'] = $proposalFileName;
@@ -107,7 +109,7 @@ class Pengajuan extends MY_Controller
         }
 
         if (!empty($_FILES['surat_pengantar'])) {
-            $suratpengantarFileName = strtolower($_FILES["surat_pengantar"]['name']);
+            $suratpengantarFileName = strtolower(time().$_FILES["surat_pengantar"]['name']);
             $config['upload_path']          = 'assets/uploads/surat_pengantar/';
             $config['allowed_types']        = 'doc|docx|pdf';
             $config['file_name'] = $suratpengantarFileName;
@@ -164,6 +166,12 @@ class Pengajuan extends MY_Controller
     {
         $this->load->helper('download');
         force_download('assets/uploads/surat_balasan/' . $data, NULL);
+    }
+
+    public function do_download_sertifikat($data)
+    {
+        $this->load->helper('download');
+        force_download('assets/uploads/sertifikat/' . $data, NULL);
     }
 
     function do_upload()
