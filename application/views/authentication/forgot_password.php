@@ -1,33 +1,22 @@
 <div class="login-box">
 	<div class="login-logo">
-		<h1 style="font-weight:bold"><center>PENDAFTARAN</center></h1>
+		<h1 style="font-weight:bold"><center>FORGOT PASSWORD</center></h1>
 	</div>
 	<!-- /.login-logo -->
 	<div class="login-box-body">
-		<p class="login-box-msg text-bold"> Masuk Dengan Email & Password Anda</p>
-		<form method="post" action="<?php echo base_url('auth/login'); ?>" role="login">
+		<p class="login-box-msg text-bold"> Masuk Dengan Email Anda</p>
+		<form method="post" action="<?php echo base_url('auth/forgot_password'); ?>">
 			<div class="form-group has-feedback">
 				<input type="email" name="email" class="form-control" required minlength="5" placeholder="Email" />
 				<span class="glyphicon  glyphicon-envelope form-control-feedback"></span>
 			</div>
-			<div class="form-group has-feedback">
-				<input type="password" name="password" class="form-control" required minlength="5" placeholder="Password" />
-				<span class="glyphicon glyphicon-lock form-control-feedback"></span>
-			</div>
 
 			<div class="row">
-				<div class="checkbox icheck col-xs-12 col-sm-6 col-md-6">
-					<label>
-                        <?php echo form_checkbox('remember_code', '1', false, 'id="remember_code"');?>
-                        Ingat Saya
-                    </label>
-				</div>
+				
 				<div class="col-xs-12 col-sm-6 col-md-6" style="padding-bottom: 5px">
-					<button type="submit" name="submit" value="login" class="btn btn-primary btn-block btn-flat"><i class="fa fa-sign-in" aria-hidden="true"></i> Masuk</button>
+					<button type="submit" name="submit" value="login" class="btn btn-primary btn-block btn-flat"><i class="fa fa-sign-in" aria-hidden="true"></i> Next</button>
 				</div>
 			</div>
-			<a href="<?php echo base_url('auth/forgot_password');?>"> Lupa Kata Sandi?</a><br>
-			<a href="<?php echo base_url('auth/register');?>"> Daftar Akun</a>
 		</form>
 	</div>
 	<div id="myalert">

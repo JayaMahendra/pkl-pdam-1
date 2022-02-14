@@ -96,28 +96,79 @@ class Auth extends MY_Controller
             if (password_verify($this->input->post('passLama'), $this->session->userdata('password'))) {
                 if ($this->input->post('passBaru') != $this->input->post('passKonf')) {
                     $this->session->set_flashdata('msg', show_err_msg('Password Baru dan Konfirmasi Password harus sama'));
-                    redirect('auth/profile');
+                    redirect('auth/login');
                 } else {
                     $data = ['password' => get_hash($this->input->post('passBaru'))];
                     $result = $this->Auth_model->update($data, $id);
                     if ($result > 0) {
                         $this->updateProfil();
                         $this->session->set_flashdata('msg', show_succ_msg('Password Berhasil diubah'));
-                        redirect('auth/profile');
+                        redirect('auth/login');
                     } else {
                         $this->session->set_flashdata('msg', show_err_msg('Password Gagal diubah'));
-                        redirect('auth/profile');
+                        redirect('auth/login');
                     }
                 }
             } else {
                 $this->session->set_flashdata('msg', show_err_msg('Password Salah'));
-                redirect('auth/profile');
+                redirect('auth/login');
             }
         } else {
             $this->session->set_flashdata('msg', show_err_msg(validation_errors()));
-            redirect('auth/profile');
+            redirect('auth/login');
         }
     }
+
+    public function reset_password()
+    {
+        $this->form_validation->set_rules('passBaru', 'Password', 'trim|required|min_length[5]|matches[passKonf]');
+        $this->form_validation->set_rules('passKonf', 'Password', 'trim|required|min_length[5]|matches[passBaru]');
+
+        // $id = $this->session->userdata('pengguna_id');
+
+        if ($this->form_validation->run() == false) {
+            $data['title'] = 'Reset Password';
+            $this->template->load('authentication/layouts/template', 'authentication/reset_password', $data);
+        } else {
+            // $data = ['password' => get_hash($this->input->post('passBaru'))];
+            // $result = $this->Auth_model->update($data, $id);
+            // if ($result > 0) {
+            //     $this->updateProfil();
+
+            $password = password_hash($this->input->post('passBaru'), PASSWORD_DEFAULT);
+            $code = $this->input->post('code');
+            
+            // print_r($this->input->post('passBaru'));
+            // die();
+            // $password = get_hash($this->input->post('password'));
+            // $code = 3888;
+                             
+
+            
+            $this->db->set('password', $password);
+            $this->db->where('code', $code);
+            $this->db->update('pengguna');
+
+            // $this->session->unset_userdata('email');
+            $data = ['password' => get_hash($this->input->post('passBaru'))];
+            $this->session->set_flashdata('alert', '<p class="box-msg">
+        <div class="info-box alert-success">
+        <div class="info-box-icon">
+        <i class="fa fa-check-circle"></i>
+        </div>
+        <div class="info-box-content" style="font-size:14">
+        <b style="font-size: 20px">SUKSES</b><br>Reset Password Berhasil! Silahkan login kembali</div>
+        </div>
+        </p>
+      ');
+            redirect('auth/login');
+            // } else {
+            //     $this->session->set_flashdata('msg', show_err_msg('Password Gagal diubah'));
+            //     redirect('auth/login');
+            // }
+        }
+    }
+
 
     private function _do_upload()
     {
@@ -282,5 +333,111 @@ class Auth extends MY_Controller
               </p>
 			');
         redirect('auth/login');
+    }
+
+
+
+    public function forgot_password()
+    {
+        $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
+
+        if ($this->form_validation->run() == false) {
+            $data['title'] = 'Lupa Password';
+            $this->template->load('authentication/layouts/template', 'authentication/forgot_password', $data);
+        } else {
+            $email = $this->input->post('email');
+            $user = $this->db->get_where('pengguna', ['email' => $email])->row_array();
+
+            if ($user) {
+                $token = rand(9999, 1111);
+                $data = [
+                    'code' => $token,
+                ];
+
+                // print_r($this->input->post('email'));
+                // die();
+
+                $this->db->where('email', $this->input->post('email'));
+                $this->db->update('pengguna', $data);
+                $this->db->affected_rows();
+
+                $this->sendEmail($token);
+                redirect('auth/form_code');
+            } else {
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-danger">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">GAGAL</b><br>Email tidak terdaftar!</div>
+                </div>
+                </p>
+              ');
+                redirect('auth/forgot_password');
+            }
+        }
+    }
+    public function sendEmail()
+    {
+        $token = rand(9999, 1111);
+        $data = [
+            'code' => $token,
+        ];
+
+        $this->db->where('email', $this->input->post('email'));
+        $this->db->update('pengguna', $data);
+        $this->db->affected_rows();
+
+        $config = array(
+            'protocol' => 'smtp',
+            'smtp_host' => 'ssl://smtp.googlemail.com',
+            'smtp_port' => 465,
+            'smtp_user' => 'iniakunbuattes@gmail.com',
+            'smtp_pass' => 'iniakunbuattes123',
+            'mailtype'  => 'html',
+            'charset'   => 'iso-8859-1'
+        );
+        $this->load->library('email', $config);
+        $this->email->set_newline("\r\n");
+        $this->email->from('iniakunbuattes@gmail.com', 'Admin PDAM Tugu Tirta');
+        // $this->email->to('jayamahendra490@gmail.com');
+        $this->email->to($this->input->post('email'));
+        $this->email->subject('Lupa Password');
+        $this->email->message('Anda akan melakukan reset password, masukkan code ' . $token . ' pada form');
+        $result = $this->email->send();
+
+        redirect('auth/form_code');
+    }
+
+
+    public function form_code()
+    {
+        $this->form_validation->set_rules('code', 'Code', 'required');
+
+        if ($this->form_validation->run() == false) {
+            $data['title'] = 'Form Code';
+            $this->template->load('authentication/layouts/template', 'authentication/form_code', $data);
+        } else {
+            $code = $this->input->post('code');
+            $user = $this->db->get_where('pengguna', ['code' => $code])->row_array();
+
+            if ($user) {
+                $this->session->set_flashdata('inikode', $code);
+                redirect('auth/reset_password');
+            } else {
+                $this->session->set_flashdata('alert', '<p class="box-msg">
+                <div class="info-box alert-danger">
+                <div class="info-box-icon">
+                <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="info-box-content" style="font-size:14">
+                <b style="font-size: 20px">GAGAL</b><br>Code yang anda masukkan salah!</div>
+                </div>
+                </p>
+              ');
+                redirect('auth/form_code');
+            }
+        }
     }
 }

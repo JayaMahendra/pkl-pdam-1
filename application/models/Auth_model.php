@@ -33,9 +33,9 @@ class Auth_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->update($this->table, $data);
         return $this->db->affected_rows();
-	}
-	
-	public function get_by_id()
+    }
+
+    public function get_by_id()
     {
         $id = $this->session->userdata('pengguna_id');
         $this->db->select('
@@ -51,23 +51,23 @@ class Auth_model extends CI_Model
 
     public function reg()
     {
-      date_default_timezone_set('ASIA/JAKARTA');
-      $data = array(
-        'email' => $this->input->post('email'),
-        'nama' => $this->input->post('name'),
-        'asal' => $this->input->post('asal'),
-        'handphone' => $this->input->post('handphone'),
-        'role_id' => '2',
-        'tanggal_daftar' => date('Y-m-d H:i:s'),
-        'status_pendaftaran' => '1',
-        'password' => get_hash($this->input->post('password'))
-      );
-      return $this->db->insert($this->table, $data);
+        date_default_timezone_set('ASIA/JAKARTA');
+        $data = array(
+            'email' => $this->input->post('email'),
+            'nama' => $this->input->post('name'),
+            'asal' => $this->input->post('asal'),
+            'handphone' => $this->input->post('handphone'),
+            'role_id' => '2',
+            'tanggal_daftar' => date('Y-m-d H:i:s'),
+            'status_pendaftaran' => '1',
+            'password' => get_hash($this->input->post('password'))
+        );
+        return $this->db->insert($this->table, $data);
     }
 
     public function login($email, $password)
     {
-        $query = $this->db->get_where($this->table, array('email'=>$email, 'password'=>$password));
+        $query = $this->db->get_where($this->table, array('email' => $email, 'password' => $password));
         return $query->row_array();
     }
 
@@ -98,6 +98,4 @@ class Auth_model extends CI_Model
         $this->db->where($this->id, $id);
         $this->db->update($this->table, $date);
     }
-
-    
 }
